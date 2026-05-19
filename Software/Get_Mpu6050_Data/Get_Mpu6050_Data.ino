@@ -150,6 +150,8 @@ void kalman_update(int i) {
   // 打印数据
   Serial.print(Ox*9.8);///////////////////////////////////////
   Serial.print(",");
+  Serial.print(Oy*9.8);
+  Serial.print(",");
   Serial.print(Oz*9.8);
 
   if (i != freq * second - 1) {
@@ -181,9 +183,9 @@ void resetState() {
 
   // 卡尔曼增益K
   k_k[0][0] = 0;
-  k_k[0][0] = 0;
-  k_k[0][0] = 0;
-  k_k[0][0] = 0;
+  k_k[0][1] = 0;
+  k_k[1][0] = 0;
+  k_k[1][1] = 0;
 
   prevTime = millis();
 }
