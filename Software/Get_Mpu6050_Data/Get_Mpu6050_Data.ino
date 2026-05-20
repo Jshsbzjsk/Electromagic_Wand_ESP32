@@ -7,9 +7,23 @@
  * Modified by: dimo333
  * ------------------------------------------------------------
  */
+
 #include "Wire.h"
 #include "MPU6050.h"
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+
 MPU6050 mpu;
+
+BLECharacteristic *pCharacteristic;
+bool deviceConnected = false;
+volatile bool collectDataRequest = false;
+
+// ====== UUID（随便定义即可）======
+#define SERVICE_UUID        "12345678-1234-1234-1234-1234567890ab"
+#define CHARACTERISTIC_UUID "abcd1234-5678-90ab-cdef-1234567890ab"
 
 // 定义每秒采样次数
 const int freq = 100;
@@ -32,47 +46,84 @@ float k_roll, k_pitch;              //卡尔曼滤波后估计出最优角度，
 float e_P[2][2];         //误差协方差矩阵，这里的e_P既是先验估计的P，也是最后更新的P
 // 卡尔曼增益K
 float k_k[2][2];         //这里的卡尔曼增益矩阵K是一个2X2的方阵
-const int buttonPin = 2; // 定义按钮引脚///////////////////////////////////////////////////////////////////这里修改成你想要设置按键的引脚
-int buttonState;          // 当前按钮状态
-int lastButtonState = HIGH; // 上一次按钮状态
-unsigned long lastDebounceTime = 0; // 上一次去抖动时间
-unsigned long debounceDelay = 10;   // 去抖动延时
+
+class MyServerCallbacks : public BLEServerCallbacks {
+  void onConnect(BLEServer* pServer) {
+    deviceConnected = true;
+    Serial.println("Phone Connected");
+  }
+
+  void onDisconnect(BLEServer* pServer) {
+    deviceConnected = false;
+    Serial.println("Phone Disconnected");
+    BLEDevice::startAdvertising();
+  }
+};
+
+class MyCallbacks : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *pCharacteristic) {
+    std::string rxValue = pCharacteristic->getValue();
+    if (rxValue.empty()) {
+      return;
+    }
+
+    String rxString = String(rxValue.c_str());
+    rxString.trim();
+
+    Serial.print("Received: ");
+    Serial.println(rxString);
+
+    if (rxString == "collect_data") {
+      collectDataRequest = true;
+      Serial.println("collect_data request received");
+    }
+  }
+};
 
 void setup() {
   Serial.begin(115200);
   Wire.begin(8, 9);/////////////////////////////////////////////////////////////////////////////////////这里修改成你esp对应型号的scl和sda的引脚，不清楚的查看另一个esp资料的文件夹
   mpu.initialize();
 
-  if (!mpu.testConnection()) {
-    Serial.println("MPU6050连接失败");
-    while (1);
-  }
-  pinMode(buttonPin, INPUT_PULLUP); // 将按钮引脚设置为输入模式，并启用内部上拉电阻
+  // if (!mpu.testConnection()) {
+  //   Serial.println("MPU6050连接失败");
+  //   while (1);
+  // }
+  Serial.println("MPU6050连接成功");
+
   resetState();
+
+  BLEDevice::init("MCue");
+  BLEServer *pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
+
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+  pCharacteristic = pService->createCharacteristic(
+                      CHARACTERISTIC_UUID,
+                      BLECharacteristic::PROPERTY_READ |
+                      BLECharacteristic::PROPERTY_WRITE
+                    );
+
+  pCharacteristic->setCallbacks(new MyCallbacks());
+  pService->start();
+
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  pAdvertising->start();
+
+  Serial.println("BLE Waiting for connection...");
 }
+
 void loop() {
-  int reading = digitalRead(buttonPin); // 读取按钮引脚的电平状态
-  // 检查是否有按钮状态变化
-  if (reading != lastButtonState) {
-    lastDebounceTime = millis(); // 记录状态变化的时间
-  }
-  // 如果状态变化超过去抖动延时，认为是有效变化
-  if ((millis() - lastDebounceTime) > debounceDelay) {
-    // 如果按钮状态确实变化了
-    if (reading != buttonState) {
-      buttonState = reading;
-      // 只有在按钮从按下变为释放时，才改变LED状态
-      if (buttonState == HIGH) {
-        resetState();
-        for (int i = 0; i < freq * second; i ++) {
-          kalman_update(i);
-        }
-        Serial.println("");
-      }
+  if (collectDataRequest) {
+    collectDataRequest = false;
+    Serial.println("Start collecting data for 2 seconds...");
+    resetState();
+    for (int i = 0; i < freq * second; i++) {
+      kalman_update(i);
     }
+    Serial.println();
+    Serial.println("collect_data finished");
   }
-  // 记录上一次按钮状态
-  lastButtonState = reading;
 }
 
 void kalman_update(int i) {
@@ -155,7 +206,7 @@ void kalman_update(int i) {
   Serial.print(Oz*9.8);
 
   if (i != freq * second - 1) {
-    Serial.print(",");
+    Serial.println();  // 最后一帧换行
   }
 
   delay(1000 / freq);
