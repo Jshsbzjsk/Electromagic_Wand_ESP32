@@ -20,6 +20,8 @@ MPU6050 mpu;
 BLECharacteristic *pCharacteristic;
 bool deviceConnected = false;
 volatile bool collectDataRequest = false;
+volatile bool vibrateRequest = false;
+const int motorPin = 5; // 震动马达 PWM 引脚
 
 // ====== UUID（随便定义即可）======
 #define SERVICE_UUID        "12345678-1234-1234-1234-1234567890ab"
@@ -75,6 +77,7 @@ class MyCallbacks : public BLECharacteristicCallbacks {
 
     if (rxString == "collect_data") {
       collectDataRequest = true;
+      vibrateRequest = true;
       Serial.println("collect_data request received");
     }
   }
@@ -93,7 +96,7 @@ void setup() {
 
   resetState();
 
-  BLEDevice::init("MCue");
+  BLEDevice::init("MCue2");
   BLEServer *pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
 
@@ -110,10 +113,27 @@ void setup() {
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->start();
 
+  pinMode(motorPin, OUTPUT);
+  analogWrite(motorPin, 0);
+
   Serial.println("BLE Waiting for connection...");
 }
 
+void vibrateThreeTimes() {
+  for (int i = 0; i < 3; i++) {
+    analogWrite(motorPin, 200); // PWM 输出，调整强度
+    delay(100);
+    analogWrite(motorPin, 0);
+    delay(100);
+  }
+}
+
 void loop() {
+  if (vibrateRequest) {
+    vibrateRequest = false;
+    vibrateThreeTimes();
+  }
+
   if (collectDataRequest) {
     collectDataRequest = false;
     Serial.println("Start collecting data for 2 seconds...");
@@ -187,23 +207,33 @@ void kalman_update(int i) {
   gravity_y = sin(k_roll) * cos(k_pitch);
   gravity_z = cos(k_roll) * cos(k_pitch);
 
+  // 先保存未消重力的原始加速度数据
+  float raw_Ax = Ax;
+  float raw_Ay = Ay;
+  float raw_Az = Az;
+
   // 重力消除
   Ax = Ax - gravity_x;
   Ay = Ay - gravity_y;
   Az = Az - gravity_z;
 
   // 得到全局空间坐标系中的相对加速度
-  Ox = cos(k_pitch) * Ax + sin(k_pitch) * sin(k_roll) * Ay + sin(k_pitch) * cos(k_roll) * Az;
+  Ox = cos(k_pitch) * Ax + sin(k_pitch) * sin(k_roll) * Ay - sin(k_pitch) * cos(k_roll) * Az;
   Oy = cos(k_roll) * Ay - sin(k_roll) * Az;
-  Oz = -sin(k_pitch) * Ax + cos(k_pitch) * sin(k_roll) * Ay + cos(k_pitch) * cos(k_roll) * Az;
+  Oz = sin(k_pitch) * Ax - cos(k_pitch) * sin(k_roll) * Ay + cos(k_pitch) * cos(k_roll) * Az;
 
-  // 打印数据
-  // 打印数据
-  Serial.print(Ox*9.8);///////////////////////////////////////
+  // 打印数据：前3个是未消重力的原始加速度，后3个是消重力后的空间加速度
+  Serial.print(raw_Ax * 9.8);
   Serial.print(",");
-  Serial.print(Oy*9.8);
+  Serial.print(raw_Ay * 9.8);
   Serial.print(",");
-  Serial.print(Oz*9.8);
+  Serial.print(raw_Az * 9.8);
+  Serial.print(",");
+  Serial.print(Ox * 9.8);
+  Serial.print(",");
+  Serial.print(Oy * 9.8);
+  Serial.print(",");
+  Serial.print(Oz * 9.8);
 
   if (i != freq * second - 1) {
     Serial.println();  // 最后一帧换行

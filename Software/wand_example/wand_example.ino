@@ -24,8 +24,8 @@ const tflite::Model* model = nullptr;
 tflite::MicroInterpreter* interpreter = nullptr;
 TfLiteTensor* model_input = nullptr;
 
-const int num_classes = 4;//////////////////////////////////////////////////////////////动作（手势）的数量，有几个就写几个
-const int input_dim = 2;////////////////////////////////////////////////////////////////传感器收集数据的维度，比如你只录入了x轴和z轴，那就写2，类推。
+const int num_classes = 4;//动作（手势）的数量，有几个就写几个
+const int input_dim = 2;//传感器收集数据的维度，比如你只录入了x轴和z轴，那就写2，类推。
 
 constexpr int kTensorArenaSize = 50 * 1024;
 uint8_t tensor_arena[kTensorArenaSize];
@@ -61,8 +61,8 @@ float e_P[2][2];         //误差协方差矩阵，这里的e_P既是先验估�
 // 卡尔曼增益K
 float k_k[2][2];         //这里的卡尔曼增益矩阵K是一个2X2的方阵
 
-const int buttonPin = 4; /////////////////////////////////////////////////////////////////////////填写你想要定义按钮的引脚
-const int ledPin = 5;   /////////////////////////////////////////////////////////////////////////填写你想要控制点亮led的引脚，你也可以不使用点灯示例
+const int buttonPin = 4; //填写你想要定义按钮的引脚
+const int ledPin = 5;   //填写你想要控制点亮led的引脚，你也可以不使用点灯示例
 int buttonState;          // 当前按钮状态
 int lastButtonState = HIGH; // 上一次按钮状态
 
@@ -104,10 +104,10 @@ void setup() {
   Wire.begin();
   mpu.initialize();
 
-  if (!mpu.testConnection()) {
-    Serial.println("MPU6050连接失败");
-    while (1);
-  }
+  // if (!mpu.testConnection()) {
+  //   Serial.println("MPU6050连接失败");
+  //   while (1);
+  // }
 
   pinMode(buttonPin, INPUT_PULLUP); // 将按钮引脚设置为输入模式，并启用内部上拉电阻
   pinMode(ledPin, OUTPUT);
