@@ -1,1 +1,5 @@
-https://docs.qq.com/sheet/DQWZEcG9DSGt1ZHZV?tab=BB08J2
+# 参考项目帮助文档
+
+本目录用于保存参考项目的故障排查和帮助资料。目前主要内容为外部在线文档链接，仓库中没有完整的本地排查手册。
+
+在线资料针对 Electromagic Wand ESP32 参考项目，不保证适用于 MCue。遇到 MCue 的问题时，应优先检查 `hardware/embedded/` 中的源码、实际接线和当前依赖版本。

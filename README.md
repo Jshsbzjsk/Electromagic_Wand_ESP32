@@ -1,99 +1,17 @@
-# 🧙‍♂️ ESP32 手势识别魔杖项目
+# Electromagic Wand ESP32 参考项目
 
-## 项目简介
+这是一个基于 ESP32 和 MPU6050 的电子魔杖参考项目，包含手势识别、BLE 外设、红外控制、灯带、Wi-Fi/MQTT 以及智能家居连接等历史实现。
 
-这是一个基于 **ESP32 + MPU6050** 实现的 **手势识别电子魔杖** 项目。你可以参考本项目的文件，动手制作属于你自己的魔杖！
+本目录位于 MCue 的 `references/` 下，仅用于参考，不是 MCue 当前正式工程。项目中的硬件版本、采样参数、模型和实验代码可能与 MCue 当前实现不同。
 
-我还提供了训练代码，你可以根据自己设计的动作“训练法术”。如果你有更好的创意或代码，欢迎交流、学习与分享！
+## 目录
 
-- 📘 [完整项目地址github](https://github.com/dimo333/Electromagic_Wand_ESP32)
-- 📘 [完整项目地址gitee](https://gitee.com/dimo666/Electromagic_Wand_ESP32/tree/main)
-- 📘 [PCB文件地址oshwhub](https://oshwhub.com/6dimo9/electromagic_wand_esp32)
----
+- `Hardware/`：PCB 和原理图资料。
+- `Software/`：示例固件、数据采集、模型训练和实验变体。
+- `3D_Print/`：不同版本的外壳打印文件。
+- `docs/`：教程、手势和智能家居相关文档。
+- `lib/`：该参考项目使用的库文件。
 
-## 🚀 快速开始
+## 使用原则
 
-我已编写详细的图文教程和环境配置指南：
-
-
-- 📘 [教程文档github](https://github.com/dimo333/Electromagic_Wand_ESP32/tree/main/docs/tutorial)
-- 📘 [教程文档gitee](https://gitee.com/dimo666/Electromagic_Wand_ESP32/tree/main/docs/tutorial)
-- 📺 [B站视频教程（基础演示）](https://www.bilibili.com/video/BV1NtwreXEzg)
-
----
-
-## 🛠 遇到问题？
-
-请尝试以下方法：
-
-1. 仔细检查是否遗漏了教程中的某一步。
-2. 根据[H_elp](https://github.com/dimo333/Electromagic_Wand_ESP32/tree/main/docs/H_elp)文档进行自救<br>
-3. 复制错误信息，使用搜索引擎或 AI 工具查找答案。
-4. 加入 QQ 群：**884880944**。
-5. B站后台私信我：[dimo333](https://space.bilibili.com/)。
-6. 发送邮件联系我：
-   - 📧 dimo333mail@gmail.com（注意拼写）
-   - 📧 3180405726@qq.com
-
----
-
-## ✨ 魔杖具备哪些功能？
-
-魔杖实现了基础的手势识别，基于此可扩展出以下功能：
-
-- 📡 红外信号复制与发送（遥控家电）
-- 🖱 模拟鼠标（如飞鼠操作）
-- ⌨️ 模拟键盘（快捷输入）
-- 📶 蓝牙 / WiFi 通信
-  - 可接入 HomeAssistant 实现智能家居联动
-  - 接入米家app控制米家设备
-
----
-
-## 💰 硬件清单与预算
-
-### 🔧 模块连接（推荐入门版）
-
-- 成本约：**15 元**
-- 组件清单：
-  - ESP32-C3 SuperMini（4MB Flash）
-  - MPU6050 陀螺仪模块
-  - 按键模块（可选）
-
-### 🛠 自制 PCB（进阶推荐）
-
-- 成本约：**70 元**
-- 推荐下单平台：嘉立创 / 立创商城
-- 所需内容：
-  - PCB 电路板（支持免费打样）
-  - PCB 元件
-  - 芯片：ESP32-C3FH4、MPU6050 等
-
----
-
-## 🧞 想直接玩，有没有捷径？
-
-有的，兄弟有的！不想动手，那就动点钱：
-
-- 加入 QQ 群，问问有没有大佬愿意出售焊接好的板子。
-- 私聊我，看看我这还有没有多余的现成板子。
-
----
-
-## 📁 项目结构
-
-```text
-├── docs                # 项目文档、图文教程、使用说明
-├── Software            # 软件代码（数据收集、训练等）
-├── Hardware            # 原理图、电路板设计文件、3D外壳模型等硬件相关资料
-├── 3D_Print            # 3D外壳模型
-├── lib                # 库文件（如库压缩包、工具函数）
-```
----
-## 复刻路线
-![复刻路线](docs/Guidelines.png)
-
-## 🤝 鸣谢与参考
-
-* [MagicWand](https://github.com/Songyeyaosong/MagicWand) - 感谢其最早实现了赛博魔杖的底层功能，为本项目的二次开发提供了参考。
-* [esp32_mouse_keyboard](https://github.com/asterics/esp32_mouse_keyboard) - 感谢其提供的 BLE 鼠标与键盘模拟功能，极大丰富了魔杖的交互能力。
+借鉴本项目时，应重新确认引脚、传感器轴、采样率、模型输入和库版本。不要直接将本目录中的功能描述视为 MCue 已经实现的功能。

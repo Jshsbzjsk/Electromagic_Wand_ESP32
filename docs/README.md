@@ -1,20 +1,13 @@
+# 参考项目文档
 
-## 📁 文件结构
+本目录保存 Electromagic Wand ESP32 参考项目的配套资料，不属于 MCue 当前项目文档。
 
-```text
-├── H_elp                   # 自救指南
-├── HomeAssistant-Mi_Home   # 如何连接HomeAssistant与米家
-├── gestures                # 手势动作图片参考
-├── others                  # 一些图片参考
-├── tutorial                # 使用教程
-├── Guidelines.png          # 一张简易的路线图
-```
----
-我花了很多时间和精力来编写这些教程，但仍然会有我无法预想到的bug存在。<br>
-如果你在根据图文教程使用的过程中遇到了问题，<br>
-可以按以下步骤来排查：<br>
-1、反复检查是否遗漏哪一步步骤<br>
-2、根据[H_elp](https://github.com/dimo333/Electromagic_Wand_ESP32/tree/main/docs/H_elp)文档进行自救<br>
-3、通过QQ群进行提问（提问请按照群公告的格式来，这会更快地获得答复）<br>
+## 子目录
 
+- `tutorial/`：基础和进阶环境配置、烧录及使用教程。
+- `H_elp/`：外部帮助文档链接。
+- `HomeAssistant-Mi_Home/`：Home Assistant、米家和相关模块资料。
+- `gestures/`：手势示例图片或动作资料。
+- `others/`：其他说明和辅助资料。
 
+文档中出现的外部链接、硬件参数和操作流程均针对参考项目，使用前请结合当前硬件重新验证。

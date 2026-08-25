@@ -1,9 +1,7 @@
+# 参考项目教程
 
-## 📁 项目结构
+本目录保存参考项目的环境安装和使用流程资料，包含基础教程与进阶教程文件。
 
-```text
-├── Environment_Installation_beginner            # 基础环境搭建指南
-├── Use_Process_beginner                         # 基础使用指南
-├── Environment_Installation_advanced            # 进阶部分环境搭建指南
-├── Use_Process_advanced                         # 进阶使用指南
-```
+教程主要面向 Arduino/ESP32、传感器读取、固件烧录和手势识别实验。由于这些资料属于历史项目，教程中的开发板、库版本、引脚和模型参数可能与 MCue 不一致。
+
+使用教程前，请先确认目标硬件和依赖库版本，并优先以 MCue 正式工程中的配置为准。

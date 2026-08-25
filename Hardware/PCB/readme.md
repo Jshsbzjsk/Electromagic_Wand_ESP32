@@ -1,1 +1,11 @@
-https://oshwhub.com/6dimo9/electromagic_wand_esp32
+# PCB 版本参考
+
+本目录保存 Electromagic Wand ESP32 参考项目的 PCB 制造资料和版本说明。
+
+## 版本
+
+- `PCB_v1.0/`：第一版可用板卡，集成红外、蓝牙和 Wi-Fi 等历史功能。
+- `PCB_v2.0/`：顶部接口调整为 2×3P 排针，红外发射改为外接模块。
+- `PCB_v2.1/`：在 v2.0 基础上调整按键位置，按键移至板侧。
+
+每个版本目录可能包含 Gerber、BOM、Pick-and-Place 和三维模型文件。它们属于参考仓库的历史板卡，不能直接视为 MCue 当前 PCB 设计。

@@ -1,7 +1,11 @@
-用的是y轴和z轴（y轴向右）
+# 1030_5 模型参考说明
 
-0_UpAndDown_
-1_RightAngle_
-2_Letter_W_
-3_SharpAngle_
-4_Horn_
+该目录保存参考项目 1030_5 手势模型和相关数据。历史说明中使用 Y/Z 两个传感器轴，动作标签包括：
+
+- `UpAndDown`：上下运动
+- `RightAngle`：直角动作
+- `Letter_W`：字母 W
+- `SharpAngle`：锐角动作
+- `Horn`：牛角动作
+
+该模型的采样参数和输入格式只适用于对应的历史训练流程。移植到 MCue 前需要重新核对数据排列和模型输入尺寸。
